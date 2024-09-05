@@ -1,44 +1,56 @@
 package baekJoon;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
-// 1157번 - 단어공부
 public class Main {
-	public static void main(String[] args) throws IOException {
-	   // 가장 높은 빈도를 가진 알파벳 찾기
-       int maxFrequency = 0;
-       char mostFrequentChar = ' ';
-       Map<Character, Integer> charMap = new HashMap<>();
-	       
-	   // 입력을 효율적으로 처리하기 위해 BufferedReader를 사용하여 입력을 받음
-	   BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	   
-	   // 빈도수 분석할 문자열 입력받음
-	   StringTokenizer str = new StringTokenizer(br.readLine());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer str = null;
 
-	   // 대소문자 구분하지 않기 위해 모든 알파뱃 대문자로 치환
-	   String word = str.nextToken().toUpperCase();
-	   
-	   // 문자열을 분해하여 빈도수 저장
-	   for(char c : word.toCharArray()) {
-		   charMap.put(c, charMap.getOrDefault(c, 0)+1);
-	   }
-	   
-	   for(Map.Entry<Character, Integer> c : charMap.entrySet()) {
-		   if(maxFrequency < c.getValue()) {
-			   maxFrequency = c.getValue();
-			   mostFrequentChar = c.getKey();
-		   } else if(maxFrequency == c.getValue()) { // 최고빈도수가 중복된다면 '?' 출력
-			   mostFrequentChar = '?';
-		   }
-	   }
-	   
-	   // 답 출력
-	   System.out.println(mostFrequentChar);
-	}
+        int calCount = Integer.parseInt(br.readLine()); // 연산 횟수
+        boolean[] checkArray = new boolean[21]; // 1부터 20까지 사용하므로 크기 21로 선언 (0은 사용 안 함)
+
+        for (int i = 0; i < calCount; i++) {
+            str = new StringTokenizer(br.readLine());
+            String caseName = str.nextToken();
+
+            switch (caseName) {
+                case "all":
+                    Arrays.fill(checkArray, true);  // 배열을 모두 true로 설정 (1~20까지 포함)
+                    break;
+                case "empty":
+                    Arrays.fill(checkArray, false); // 배열을 모두 false로 설정 (모두 비우기)
+                    break;
+                default:
+                    int paramInt = Integer.parseInt(str.nextToken());
+
+                    switch (caseName) {
+                        case "add":
+                            checkArray[paramInt] = true;
+                            break;
+                        case "remove":
+                            checkArray[paramInt] = false;
+                            break;
+                        case "check":
+                            bw.write(checkArray[paramInt] ? "1\n" : "0\n");
+                            break;
+                        case "toggle":
+                            checkArray[paramInt] = !checkArray[paramInt];
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        // 모든 출력이 끝나면 일괄 출력
+        bw.flush();
+        bw.close();
+    }
 }
