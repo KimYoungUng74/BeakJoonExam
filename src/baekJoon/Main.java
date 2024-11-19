@@ -5,7 +5,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -14,41 +16,51 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer str = null;
 
-        int calCount = Integer.parseInt(br.readLine()); // 연산 횟수
-        boolean[] checkArray = new boolean[21]; // 1부터 20까지 사용하므로 크기 21로 선언 (0은 사용 안 함)
+        StringBuilder result = new StringBuilder();
+        
+        int selectChannel = 0;
+        int channelCount = Integer.parseInt(br.readLine()); // TV체널 갯수
+        if((channelCount >= 2 && channelCount <= 100)) {
+        	List<String> channelArray = new ArrayList<>(); // 2부터 100까지 사용하므로 크기
 
-        for (int i = 0; i < calCount; i++) {
-            str = new StringTokenizer(br.readLine());
-            String caseName = str.nextToken();
-
-            switch (caseName) {
-                case "all":
-                    Arrays.fill(checkArray, true);  // 배열을 모두 true로 설정 (1~20까지 포함)
-                    break;
-                case "empty":
-                    Arrays.fill(checkArray, false); // 배열을 모두 false로 설정 (모두 비우기)
-                    break;
-                default:
-                    int paramInt = Integer.parseInt(str.nextToken());
-
-                    switch (caseName) {
-                        case "add":
-                            checkArray[paramInt] = true;
-                            break;
-                        case "remove":
-                            checkArray[paramInt] = false;
-                            break;
-                        case "check":
-                            bw.write(checkArray[paramInt] ? "1\n" : "0\n");
-                            break;
-                        case "toggle":
-                            checkArray[paramInt] = !checkArray[paramInt];
-                            break;
-                    }
-                    break;
+            for (int i = 0; i < channelCount; i++) {
+                str = new StringTokenizer(br.readLine());
+                String channelName = str.nextToken();
+                channelArray.add(channelName);
             }
+            
+            // KBS1 찾기
+            selectChannel = channelArray.indexOf("KBS1");
+            
+            // KBS1 선택
+            for(int m=0; m<selectChannel; m++) {
+            	result.append("1");
+            }
+            
+            // KBS1 첫번째로 올리기
+            for(int j=selectChannel; j>0; j--) {
+            	Collections.swap(channelArray, j, j-1);
+            	result.append("4");
+            }
+            
+            // KBS2 찾기
+            selectChannel = channelArray.indexOf("KBS2");
+            
+            // KBS2 선택
+            for(int m=0; m<selectChannel; m++) {
+            	result.append("1");
+            }
+            
+            // KBS2 두번째로 올리기
+            for(int j=selectChannel; j>1; j--) {
+            	Collections.swap(channelArray, j, j-1);
+            	result.append("4");
+            }
+            bw.write(result.toString());
+            
+        } else {
+        	bw.write("Channel count is Out of range");
         }
-
         // 모든 출력이 끝나면 일괄 출력
         bw.flush();
         bw.close();
